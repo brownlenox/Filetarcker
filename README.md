@@ -5,10 +5,10 @@ ensure your system has Scripts and run the following two commands to activate vi
 
          python -m venv venv
  
-         .\venv\Scripts\activate)
+         .\venv\Scripts\activate
  then run 
          
-         pip install -r requirements.txt,
+         pip install -r requirements.txt
 it will install django and all other available requirements
 
 run
