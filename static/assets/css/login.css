@@ -1,0 +1,88 @@
+/* index.css */
+
+/* Set the background color to cream */
+body {
+    background-color: #FFFDD0;
+    font-family: Arial, sans-serif;
+}
+
+/* Style the navigation bar */
+nav {
+    display: flex;
+    justify-content: space-between;
+    background-color: rgb(57, 12, 219);
+    padding: 10px;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: white;
+    text-transform: uppercase; /* Make links uppercase */
+    padding: 5px 10px;
+}
+
+nav ul li a.active,
+nav ul li a:hover {
+    background-color: #0f051c;
+    border-radius: 4px;
+}
+
+/* Style the form */
+form {
+    margin-top: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="file"] {
+    width: 10%;
+    padding: 8px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: rgb(57, 12, 219);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase; /* Make button text uppercase */
+}
+
+button:hover {
+    background-color: #575757;
+}
+@keyframes popOut {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.5);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+#poppingImage {
+    display: block;
+    width: 100px;
+    height: 100px;
+    animation: popOut 1s infinite;
+}
+
