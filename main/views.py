@@ -56,6 +56,7 @@ def user_login(request):
 
     return render(request, 'login.html', {'form': form})
 
+@login_required
 def track_file(request):
     return render(request, 'Track file.html')
 
@@ -72,7 +73,7 @@ def account(request):
 
     return render(request, 'account.html', {'user_profile': user_profile})
 
-
+@login_required
 def editprofile(request):
     try:
         user_profile = request.user.userprofile  # Try to get existing UserProfile
@@ -93,3 +94,7 @@ def editprofile(request):
         form = EditProfileForm(instance=request.user, initial={'profile_picture': user_profile.profile_picture})
 
     return render(request, 'edit-profile.html', {'form': form})
+
+@login_required
+def new_application(request):
+    return render(request, 'new_application.html')
