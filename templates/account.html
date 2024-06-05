@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Account{% endblock title %}
+
+{% block content %}
+<style>
+    .custom-container {
+        margin-top: 13vh;
+    }
+
+    .profile-image {
+        max-width: 200px;
+        max-height: 200px;
+        object-fit: cover;
+        
+    }
+
+    .account-details {
+        font-size: 1.2rem;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="custom-container">
+
+    <div class="container">
+        <h2 class="text-center mb-4">Welcome, {{ user.username }}</h2>
+        <div class="card mb-4 p-5">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <div class="col-md-4">
+                        {% if user_profile.profile_picture %}
+                            <img src="{{ user_profile.profile_picture.url }}" class="img-fluid  rounded-circle profile-image p-3" alt="Profile Image">
+                        {% else %}
+                            <img src="{% static 'assets/images/person.png' %}" class="img-fluid rounded profile-image p-3" alt="Profile Image">
+                        {% endif %}
+                    </div>
+                    
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fa-solid fa-user me-4"></i>{{ user.username }}</h5>
+                        <p class="card-text account-details">
+                            <strong><i class="fa-solid fa-envelope me-4"></i></strong> {{ user.email }}
+                            
+                        </p>
+                        {{ user.profile.profile_image.url }}
+                        <!-- Add more account details as needed -->
+
+                        <a href="{% url 'edit-profile'%}" class="btn btn-primary">Edit Profile</a>
+                        <a href="{% url 'logout'%}" class="btn btn-primary">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
