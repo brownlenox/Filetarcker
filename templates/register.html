@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Login{% endblock title %}
+{% block title %}Register{% endblock title %}
 
 {% block content %}
 <div class="container">
@@ -9,22 +9,26 @@
         <div class="col-md-6">
             <div class="card shadow-sm mt-5">
                 <div class="card-body">
-                    <h1 class="card-title text-center mb-4">Login Page</h1>
-                    <form method="post" action="{% url 'login' %}">
+                    <h1 class="card-title text-center mb-4">Sign Up</h1>
+                    <form method="post" action="{% url 'register' %}">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label for="UserName" class="form-label">Enter UserName:</label>
+                            <label for="UserName" class="form-label">Enter Username:</label>
                             <input type="text" class="form-control" id="UserName" name="UserName" required>
                         </div>
                         <div class="mb-3">
                             <label for="Password" class="form-label">Enter Password:</label>
                             <input type="password" class="form-control" id="Password" name="Password" required>
                         </div>
+                        <div class="mb-3">
+                            <label for="ConfirmPassword" class="form-label">Confirm Password:</label>
+                            <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" required>
+                        </div>
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Login</button>
+                            <button type="submit" class="btn btn-primary">Register</button>
                         </div>
                         <div class="text-center mt-3">
-                            <a href="{% url 'register' %}">Don't have an account? Register</a>
+                            <a href="{% url 'login' %}">Already have an account? Login</a>
                         </div>
                     </form>
                 </div>
@@ -33,3 +37,4 @@
     </div>
 </div>
 {% endblock content %}
+
