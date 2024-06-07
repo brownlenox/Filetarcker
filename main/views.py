@@ -74,6 +74,7 @@ def account(request):
     return render(request, 'account.html', {'user_profile': user_profile})
 
 @login_required
+@csrf_exempt
 def editprofile(request):
     try:
         user_profile = request.user.userprofile  # Try to get existing UserProfile
