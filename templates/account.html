@@ -13,48 +13,70 @@
         max-width: 200px;
         max-height: 200px;
         object-fit: cover;
-        
     }
 
     .account-details {
         font-size: 1.2rem;
         margin-top: 20px;
     }
+
+    .card {
+        border: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .btn-custom {
+        background-color: #007bff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-custom:hover {
+        background-color: #0056b3;
+    }
+
+    .profile-info {
+        padding: 20px;
+    }
+
+    .p-5 {
+        padding: 3rem !important;
+    }
 </style>
 
 <div class="custom-container">
-
     <div class="container">
         <h2 class="text-center mb-4">Welcome, {{ user.username }}</h2>
         <div class="card mb-4 p-5">
             <div class="row g-0">
-                <div class="col-md-4">
-                    <div class="col-md-4">
-                        {% if user_profile.profile_picture %}
-                            <img src="{{ user_profile.profile_picture.url }}" class="img-fluid  rounded-circle profile-image p-3" alt="Profile Image">
-                        {% else %}
-                            <img src="{% static 'assets/images/person.png' %}" class="img-fluid rounded profile-image p-3" alt="Profile Image">
-                        {% endif %}
-                    </div>
-                    
+                <div class="col-md-4 text-center">
+                    {% if user_profile.profile_picture %}
+                        <img src="{{ user_profile.profile_picture.url }}" class="img-fluid rounded-circle profile-image p-3" alt="Profile Image">
+                    {% else %}
+                        <img src="{% static 'assets/images/person.png' %}" class="img-fluid rounded-circle profile-image p-3" alt="Profile Image">
+                    {% endif %}
                 </div>
                 <div class="col-md-8">
-                    <div class="card-body">
+                    <div class="card-body profile-info">
                         <h5 class="card-title"><i class="fa-solid fa-user me-4"></i>{{ user.username }}</h5>
                         <p class="card-text account-details">
                             <strong><i class="fa-solid fa-envelope me-4"></i></strong> {{ user.email }}
-                            
                         </p>
-                        {{ user.profile.profile_image.url }}
                         <!-- Add more account details as needed -->
-
-                        <a href="{% url 'edit-profile'%}" class="btn btn-primary">Edit Profile</a>
-                        <a href="{% url 'logout'%}" class="btn btn-primary">Logout</a>
+                        <a href="{% url 'edit-profile' %}" class="btn btn-custom me-2 text-light">Edit Profile</a>
+                        <a href="{% url 'logout' %}" class="btn btn-custom text-light">Logout</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock content %}
