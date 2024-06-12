@@ -67,7 +67,9 @@
                 <div class="col-md-8">
                     <div class="card-body profile-info">
                         <h5 class="card-title"><i class="fa-solid fa-user me-4"></i>{{ user.username }}</h5>
+                        
                         <p class="card-text account-details">
+                            <p class="card-title">Account type: {{ user_profile.role }}</p>
                             <strong><i class="fa-solid fa-envelope me-4"></i></strong> {{ user.email }}
                         </p>
                         <!-- Add more account details as needed -->

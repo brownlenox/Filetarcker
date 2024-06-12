@@ -1,10 +1,10 @@
+# forms.py
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
-from .models import UserProfile
-
+from .models import UserProfile, Project, Comment, Reply
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
@@ -24,32 +24,62 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
 
 class EditProfileForm(forms.ModelForm):
+    profile_picture = forms.ImageField(label='Profile Picture', required=False)
+
     class Meta:
         model = User
         fields = ('username', 'email',)  # Add other fields from User model as needed
 
-    # Additional fields from UserProfile model
-    profile_picture = forms.ImageField(label='Profile Picture', required=False)
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Populate the form with data from both User and UserProfile models
         if self.instance.pk:
             user_profile, created = UserProfile.objects.get_or_create(user=self.instance)
             self.fields['profile_picture'].initial = user_profile.profile_picture
 
     def save(self, commit=True):
-        # Save data to both User and UserProfile models
         user = super().save(commit)
-
-        # Check if UserProfile already exists for this user
         user_profile, created = UserProfile.objects.get_or_create(user=user)
 
-        # If UserProfile was created, update its fields
-        if created:
+        if created or 'profile_picture' in self.changed_data:
             user_profile.profile_picture = self.cleaned_data['profile_picture']
 
         if commit:
             user_profile.save()
 
         return user
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['profile_picture']
+
+class UserProfileAdminForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['profile_picture', 'role']
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']
+
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['name', 'category', 'number', 'contractor', 'handling_officer', 'contract_type', 'files']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filter handling officers based on their role
+        self.fields['handling_officer'].queryset = User.objects.filter(userprofile__role='officer')
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+
+class ReplyForm(forms.ModelForm):
+    class Meta:
+        model = Reply
+        fields = ['content']

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* Custom styles for the projects list */
+    .project-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .project-item {
+        margin-bottom: 10px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        padding: 10px;
+        transition: background-color 0.3s ease;
+    }
+
+    .project-item:hover {
+        background-color: #e9ecef;
+    }
+
+    .project-link {
+        color: #333;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .project-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm mt-5">
+                <div class="card-body">
+                    <h1 class="card-title text-center mb-4">Projects</h1>
+                    <ul class="project-list">
+                        {% for project in projects %}
+                        <li class="project-item">
+                            <a href="{% url 'project_detail' project.pk %}" class="project-link">{{ project.name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

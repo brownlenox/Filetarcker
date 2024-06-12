@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Add Reply</h2>
+<form method="post" action="{% url 'add_reply' project.pk comment.pk %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Reply</button>
+</form>
+{% endblock %}
