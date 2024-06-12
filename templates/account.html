@@ -7,75 +7,118 @@
 <style>
     .custom-container {
         margin-top: 13vh;
-    }
-
-    .profile-image {
-        max-width: 200px;
-        max-height: 200px;
-        object-fit: cover;
-    }
-
-    .account-details {
-        font-size: 1.2rem;
-        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 70vh;
     }
 
     .card {
         border: none;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
     }
 
-    .card-title {
-        font-size: 1.5rem;
+    .card-header {
+        background-color: #007bff;
+        color: white;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .profile-image {
+        width: 100%;
+        max-height: 300px;
+        object-fit: cover;
+        border-bottom: 1px solid #f8f9fa;
+    }
+
+    .profile-info {
+        padding: 30px;
+        background-color: #f8f9fa;
+    }
+
+    .profile-info h5 {
+        font-size: 2rem;
         font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .profile-info p {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
     }
 
     .btn-custom {
         background-color: #007bff;
         border: none;
-        padding: 10px 20px;
-        font-size: 1rem;
+        padding: 12px 24px;
+        font-size: 1.2rem;
         border-radius: 5px;
-        transition: background-color 0.3s ease;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        margin-right: 10px;
     }
 
     .btn-custom:hover {
         background-color: #0056b3;
+        transform: translateY(-2px);
     }
 
-    .profile-info {
-        padding: 20px;
+    .info-icon {
+        margin-right: 10px;
     }
 
-    .p-5 {
-        padding: 3rem !important;
+    .info-text {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .card {
+            margin: 20px;
+        }
+
+        .profile-info {
+            padding: 20px;
+        }
+
+        .profile-info h5 {
+            font-size: 1.5rem;
+        }
+
+        .profile-info p {
+            font-size: 1rem;
+        }
+
+        .btn-custom {
+            padding: 10px 20px;
+            font-size: 1rem;
+        }
     }
 </style>
 
 <div class="custom-container">
-    <div class="container">
-        <h2 class="text-center mb-4">Welcome, {{ user.username }}</h2>
-        <div class="card mb-4 p-5">
-            <div class="row g-0">
-                <div class="col-md-4 text-center">
-                    {% if user_profile.profile_picture %}
-                        <img src="{{ user_profile.profile_picture.url }}" class="img-fluid rounded-circle profile-image p-3" alt="Profile Image">
-                    {% else %}
-                        <img src="{% static 'assets/images/person.png' %}" class="img-fluid rounded-circle profile-image p-3" alt="Profile Image">
-                    {% endif %}
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body profile-info">
-                        <h5 class="card-title"><i class="fa-solid fa-user me-4"></i>{{ user.username }}</h5>
-                        
-                        <p class="card-text account-details">
-                            <p class="card-title">Account type: {{ user_profile.role }}</p>
-                            <strong><i class="fa-solid fa-envelope me-4"></i></strong> {{ user.email }}
-                        </p>
-                        <!-- Add more account details as needed -->
-                        <a href="{% url 'edit-profile' %}" class="btn btn-custom me-2 text-light">Edit Profile</a>
-                        <a href="{% url 'logout' %}" class="btn btn-custom text-light">Logout</a>
-                    </div>
+    <div class="card">
+        <div class="card-header">
+            <h2>Welcome, {{ user.username }}</h2>
+        </div>
+        <div class="row g-0">
+            <div class="col-md-4">
+                {% if user_profile.profile_picture %}
+                    <img src="{{ user_profile.profile_picture.url }}" class="img-fluid profile-image" alt="Profile Image">
+                {% else %}
+                    <img src="{% static 'assets/images/person.png' %}" class="img-fluid profile-image" alt="Profile Image">
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <div class="profile-info">
+                    <h5 class="card-title"><i class="fa-solid fa-user info-icon"></i>{{ user.username }}</h5>
+                    <p class="info-text"><i class="fa-solid fa-id-badge info-icon"></i>Account type: {{ user_profile.role }}</p>
+                    <p class="info-text"><i class="fa-solid fa-envelope info-icon"></i>{{ user.email }}</p>
+                    <!-- Add more account details as needed -->
+                    <a href="{% url 'edit-profile' %}" class="btn btn-custom">Edit Profile</a>
+                    <a href="{% url 'logout' %}" class="btn btn-custom">Logout</a>
                 </div>
             </div>
         </div>

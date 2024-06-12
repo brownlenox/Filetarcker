@@ -23,6 +23,7 @@ urlpatterns = [
 
     path('projects/create/', views.create_project, name='new_application'),
     path('projects/<int:pk>/', views.project_detail, name='project_detail'),
+    path('projects/<int:project_id>/delete/', views.delete_project, name='delete_project'),
     path('profile/', views.update_profile, name='profile'),
     path('admin/profile/<int:user_id>/', views.admin_update_profile, name='admin_update_profile'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

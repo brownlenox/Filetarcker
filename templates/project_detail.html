@@ -5,88 +5,147 @@
 
 {% block content %}
 <style>
-    .form-text{
-        display:none;
+    .form-text {
+        display: none;
     }
-    .asteriskField{
-        display:none;
+    .asteriskField {
+        display: none;
     }
     .file-preview {
         max-width: 100%; /* Ensure the preview image doesn't overflow */
         height: auto; /* Maintain aspect ratio */
     }
-    
+    .project-details {
+        margin-top: 13vh;
+    }
+    .card-header, .card-body {
+        padding: 20px;
+    }
+    .card-header {
+        background-color: #007bff;
+        color: white;
+        border-bottom: 1px solid #f8f9fa;
+    }
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    .fw-bold {
+        font-weight: bold;
+    }
+    .comment-section, .replies-section {
+        margin-top: 30px;
+    }
+    .replies-section h5 {
+        margin-top: 20px;
+    }
+    .btn-custom {
+        background-color: #007bff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        color: white;
+    }
+    .btn-custom:hover {
+        background-color: #0056b3;
+    }
+    .btn-outline-custom {
+        border: 1px solid #007bff;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border-radius: 5px;
+        color: #007bff;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .btn-outline-custom:hover {
+        background-color: #007bff;
+        color: white;
+    }
+    .btn-sm i {
+        margin-right: 5px;
+    }
+    .comment-card, .reply-card {
+        border: 1px solid #ddd;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    .reply-card {
+        margin-left: 20px;
+    }
+    .no-replies {
+        margin-left: 20px;
+        font-style: italic;
+    }
 </style>
-<div class="container">
+
+<div class="container project-details">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="card shadow-sm mt-5">
                 <div class="card-body">
-                    <h1>{{ project.name }}</h1>
-                    <p><span class="fw-bold">Category: </span> {{ project.category }}</p>
-                    <p><span class="fw-bold">Number: </span>{{ project.number }}</p>
-                    <p><span class="fw-bold">Contractor: {{ project.contractor }}</p>
-                    <p><span class="fw-bold">Handling Officer: </span>{{ project.handling_officer.username }}</p>
-                    <p><span class="fw-bold">Contract Type: </span>{{ project.contract_type }}</p>
-                    
-                    {% if project.files.name|lower|slice:"-3:" == "jpg" or project.files.name|lower|slice:"-4:" == "jpeg" or project.files.name|lower|slice:"-3:" == "png" %}
-                        <p><span class="fw-bold">Image: </span></p><img src="{{ project.files.url }}" alt="File Preview" class="file-preview">
-                    {% else %}
-                        <p><span class="fw-bold">Files: </span><a href="{{ project.files.url }}" class="file-link">{{ project.files.name }}</a></p>
-                    {% endif %}
+                    <div>
+                        <a class="btn btn-outline-custom" href="{% url 'project_list' %}"><i class="fa-solid fa-backward"></i> Back</a>
+                    </div>
+                    <h1 class="card-title mt-4">{{ project.name }}</h1>
+                    <hr>
+                    <p><span class="fw-bold">Category:</span> {{ project.category }}</p>
+                    <p><span class="fw-bold">Number:</span> {{ project.number }}</p>
+                    <p><span class="fw-bold">Contractor:</span> {{ project.contractor }}</p>
+                    <p><span class="fw-bold">Handling Officer:</span> {{ project.handling_officer.username }}</p>
+                    <p><span class="fw-bold">Contract Type:</span> {{ project.contract_type }}</p>
                     <hr>
 
-                    <h2>Comments</h2>
-                    {% for comment in comments %}
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <strong>{{ comment.user.username }}</strong> ({{ comment.timestamp }})
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text">{{ comment.content }}</p>
-
-                            <div class="replies">
-                                <h5>Replies</h5>
-                                {% for reply in comment.replies.all %}
-                                <div class="card mb-2">
-                                    <div class="card-header">
-                                        <strong>{{ reply.user.username }}</strong> ({{ reply.timestamp }})
-                                    </div>
-                                    <div class="card-body">
-                                        <p class="card-text">{{ reply.content }}</p>
-                                        {% if reply.user == request.user %}
-                                        <p>
-                                            <a href="{% url 'edit_reply' project.pk comment.pk reply.pk %}" class="btn btn-sm btn-outline-success">Edit</a>
-                                            <a href="{% url 'delete_reply' project_id=project.id comment_id=comment.id reply_id=reply.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
-                                        </p>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                {% empty %}
-                                <p>No replies yet.</p>
-                                {% endfor %}
+                    <div class="comment-section">
+                        <h2>Comments</h2>
+                        {% for comment in comments %}
+                        <div class="card comment-card">
+                            <div class="card-header">
+                                <strong>{{ comment.user.username }}</strong> ({{ comment.timestamp }})
                             </div>
+                            <div class="card-body">
+                                <p class="card-text">{{ comment.content }}</p>
 
-                            
-                            
-                            {% if request.user.userprofile.role == 'director' %}
-                            <p>
-                                <a href="{% url 'edit_comment' pk=project.pk comment_id=comment.pk %}" class="btn btn-sm btn-primary">Edit</a>
-                                <a href="{% url 'delete_comment' pk=project.pk comment_id=comment.pk %}" class="btn btn-sm btn-danger">Delete</a>
-                                
-                            </p>
-                            {% endif %}
-                            <p><a href="{% url 'add_reply' project.pk comment.pk %}" class="btn btn-sm btn-success">Reply</a></p>
+                                <div class="replies-section">
+                                    <h5>Replies</h5>
+                                    {% for reply in comment.replies.all|dictsortreversed:"timestamp" %}
+                                    <div class="card reply-card">
+                                        <div class="card-header">
+                                            <strong>{{ reply.user.username }}</strong> ({{ reply.timestamp }})
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="card-text">{{ reply.content }}</p>
+                                            {% if reply.user == request.user %}
+                                            <p>
+                                                <a href="{% url 'edit_reply' project.pk comment.pk reply.pk %}" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+                                                <a href="{% url 'delete_reply' project_id=project.id comment_id=comment.id reply_id=reply.id %}" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i> Delete</a>
+                                            </p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% empty %}
+                                    <p class="no-replies">No replies yet.</p>
+                                    {% endfor %}
+                                </div>
+
+                                {% if request.user.userprofile.role == 'director' %}
+                                <p>
+                                    <a href="{% url 'edit_comment' pk=project.pk comment_id=comment.pk %}" class="btn btn-sm btn-primary"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+                                    <a href="{% url 'delete_comment' pk=project.pk comment_id=comment.pk %}" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i> Delete</a>
+                                </p>
+                                {% endif %}
+                                <p><a href="{% url 'add_reply' project.pk comment.pk %}" class="btn btn-sm btn-success"><i class="fa-solid fa-reply"></i> Reply</a></p>
+                            </div>
                         </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
-
-
-
 
                     <!-- Add comment form -->
                     {% if user.userprofile.role == 'director' %}
                     <hr>
+                    <div class="add-comment-section">
                         <h2>Add Comment</h2>
                         <form method="post">
                             {% csrf_token %}
@@ -96,22 +155,17 @@
                                 </div>
                             </div>
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-primary">Add Comment</button>
+                                <button type="submit" class="btn btn-custom">Add Comment</button>
                             </div>
                         </form>
+                    </div>
                     {% else %}
-                        <!-- You can display a message or hide the form -->
-                        <hr>
-                        <p class="fw-bold">You do not have permission to add a comment.</p>
+                    <hr>
+                    <p class="fw-bold">You do not have permission to add a comment.</p>
                     {% endif %}
-
-
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div class="container">
-    
 </div>
 {% endblock %}

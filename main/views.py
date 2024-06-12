@@ -122,11 +122,6 @@ def project_detail(request, pk):
     project = get_object_or_404(Project, pk=pk)
     comments = project.comments.all().order_by('-timestamp')
 
-    for comment in comments:
-        print(f"Comment: {comment.content}")
-        for reply in comment.replies.all():
-            print(f"    Reply: {reply.content}")
-
 
     if request.method == 'POST':
         comment_form = CommentForm(request.POST)
@@ -145,6 +140,17 @@ def project_detail(request, pk):
         'comment_form': comment_form
     })
 
+@login_required
+def delete_project(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    if request.user.userprofile.role == 'director':
+        if request.method == 'POST':
+            project.delete()
+            return redirect('project_list')
+        return render(request, 'confirm_delete_project.html', {'project': project})
+    else:
+        return redirect('project_detail', pk=project_id)
+
 
 @login_required
 def edit_comment(request, pk, comment_id):
@@ -159,7 +165,7 @@ def edit_comment(request, pk, comment_id):
     return render(request, 'edit_comment.html', {'form': form})
 
 @login_required
-def delete_comment(request, pk, comment_id, reply_id):
+def delete_comment(request, pk, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
     project = comment.project  # Retrieve the project associated with the comment
     if request.method == 'POST':
