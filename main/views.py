@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import UserRegisterForm, LoginForm, EditProfileForm, ReplyForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from .models import UserProfile, Reply
+from .models import UserProfile, Reply, Notification
 from .forms import (
     UserRegisterForm, LoginForm, EditProfileForm,
     UserProfileForm, UserProfileAdminForm, UserForm,
@@ -24,6 +24,40 @@ def is_director(user):
 def index(request):
     return render(request, 'Home.html')
 
+def notifications(request):
+    user = request.user
+
+    # Fetch unread notifications
+    notifications = Notification.objects.filter(is_read=False).order_by('-project__created_at')
+    
+    display_notifications = []
+
+    # Collect notifications that have a handling officer
+    for notification in notifications:
+        if notification.project.handling_officer == user:
+            display_notifications.append(notification)
+
+    return render(request, 'Notifications.html', {'display_notifications': display_notifications})
+
+def accept_project(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+    # Logic to handle accepting the project
+    project.status = 'Accepted'
+    project.save()
+    # Update the related notification as read
+    Notification.objects.filter(project=project).update(is_read=True)
+    return redirect('notifications')
+
+def decline_project(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+    # Logic to handle declining the project
+    project.status = 'Declined'
+    project.save()
+    # Update the related notification as read
+    Notification.objects.filter(project=project).update(is_read=True)
+    return redirect('notifications')   
+
+   
 @csrf_exempt
 def register(request):
     if request.method == 'POST':
@@ -109,9 +143,18 @@ def editprofile(request):
 @login_required
 def create_project(request):
     if request.method == 'POST':
+        user = request.user
         form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            project = form.save(commit=False)
+            project.user = user
+            project.save()
+
+            notification = Notification(
+                project=project,
+                is_read=False
+            )
+            notification.save()
             return redirect('project_list')
     else:
         form = ProjectForm()

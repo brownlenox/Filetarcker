@@ -66,7 +66,7 @@ class UserForm(forms.ModelForm):
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ['name', 'category', 'number', 'contractor', 'handling_officer', 'contract_type'] # 'files', is an existing field, can be added
+        fields = ['name_of_the_project', 'tender_number','project_type',  'name_of_the_contractor', 'handling_officer'] # 'files', is an existing field, can be added
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

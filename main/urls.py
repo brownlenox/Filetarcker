@@ -12,6 +12,9 @@ urlpatterns = [
     path('account/', views.account, name="account"),
     path('edit-profile/', views.editprofile, name="edit-profile"),
     path('projects/', views.project_list, name='project_list'),
+    path('notifications/', views.notifications, name='notifications'),
+    path('notifications/accept/<int:project_id>/', views.accept_project, name='accept_project'),
+    path('notifications/decline/<int:project_id>/', views.decline_project, name='decline_project'),
     path('projects/<int:pk>/comments/<int:comment_id>/edit/', views.edit_comment, name='edit_comment'),
     path('projects/<int:pk>/comments/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
    

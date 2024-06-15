@@ -30,24 +30,45 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
-class Project(models.Model):
-    name = models.CharField(max_length=100)
-    category = models.CharField(max_length=100)
-    number = models.CharField(max_length=100)
-    contractor = models.CharField(max_length=100)
-    handling_officer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='projects')
-    contract_type = models.CharField(max_length=50)
-    files = models.FileField(upload_to=unique_file_name, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+class Contractor(models.Model):
+    name_of_contractor = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.name
+        return self.name_of_contractor
+
+class Project(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Accepted', 'Accepted'),
+        ('Declined', 'Declined'),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name_of_the_project = models.CharField(max_length=100)
+    project_type = models.CharField(max_length=100)
+    tender_number = models.CharField(max_length=100)
+    name_of_the_contractor = models.ForeignKey(Contractor, on_delete=models.SET_NULL, null=True, related_name='contractors')
+    handling_officer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='projects')
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+
+    def __str__(self):
+        return self.name_of_the_project
+
+
+class Notification(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.project.name_of_the_project
 
 class Comment(models.Model):
     project = models.ForeignKey(Project, related_name='comments', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+
+
 
 class Reply(models.Model):
     comment = models.ForeignKey(Comment, related_name='replies', on_delete=models.CASCADE)

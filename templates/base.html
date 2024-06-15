@@ -40,7 +40,12 @@
                         <a class="nav-link text-light" href="{% url 'project_list'%}"><i class="fa-solid fa-clock-rotate-left mx-2"></i>Application Histories</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="#"><i class="fa-solid fa-share mx-2"></i>File Transfer</a>
+                        <a class="nav-link text-light" href="{% url 'notifications' %}">
+                            <i class="fa-solid fa-envelope mx-2"></i>Notifications
+                            {% if new_notifications_count > 0 %}
+                            <span class="badge badge-pill badge-danger">{{ new_notifications_count }}</span>
+                            {% endif %}
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-light" href="{% url 'account'%}"><i class="fa-solid fa-user mx-2"></i>Account</a>

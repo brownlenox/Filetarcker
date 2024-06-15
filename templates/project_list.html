@@ -38,7 +38,7 @@
                     <div class="card card-hover shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title">
-                                <a href="{% url 'project_detail' project.pk %}" class="project-link">{{ project.name }}</a>
+                                <a href="{% url 'project_detail' project.pk %}" class="project-link">{{ project.name_of_the_project }}</a>
                             </h5>
                             <p class="card-text text-muted">{{ project.description }}</p>
                             {% if request.user.userprofile.role == 'director' %}

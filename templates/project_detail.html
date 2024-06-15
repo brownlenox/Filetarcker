@@ -89,13 +89,12 @@
                     <div>
                         <a class="btn btn-outline-custom" href="{% url 'project_list' %}"><i class="fa-solid fa-backward"></i> Back</a>
                     </div>
-                    <h1 class="card-title mt-4">{{ project.name }}</h1>
+                    <h1 class="card-title mt-4">{{ project.name_of_the_project }}</h1>
                     <hr>
-                    <p><span class="fw-bold">Category:</span> {{ project.category }}</p>
-                    <p><span class="fw-bold">Number:</span> {{ project.number }}</p>
-                    <p><span class="fw-bold">Contractor:</span> {{ project.contractor }}</p>
+                    <p><span class="fw-bold">Tender No.:</span> {{ project.tender_number }}</p>
+                    <p><span class="fw-bold">Project Type:</span> {{ project.project_type }}</p>
+                    <p><span class="fw-bold">Name of the Contractor:</span> {{ project.name_of_the_contractor }}</p>
                     <p><span class="fw-bold">Handling Officer:</span> {{ project.handling_officer.username }}</p>
-                    <p><span class="fw-bold">Contract Type:</span> {{ project.contract_type }}</p>
                     <hr>
 
                     <div class="comment-section">
