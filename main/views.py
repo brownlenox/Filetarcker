@@ -56,24 +56,24 @@ def notifications(request):
     
 @login_required
 def mark_project_finished(request, project_id):
-    project = get_object_or_404(Project, id=project_id)
-    user = request.user
-    try:
-            notification = Notification.objects.get(project=project)
-            notification.is_finished = True
-            notification.message = f"Project '{project.name_of_the_project}' by {project.handling_officer} is finished."
-            notification.save()
-    except Notification.DoesNotExist:
-            # Handle the case where no notification exists for the project
-            pass
-
-        # Mark the project as finished (add your logic here)
+    if request.method == 'POST':
+        project = get_object_or_404(Project, id=project_id)
+        if request.user == project.handling_officer:
             project.is_finished = True
             project.save()
-          
-       
-    return redirect('project_list')
-
+            
+            try:
+                notification = Notification.objects.get(project=project)
+                notification.is_finished = True
+                notification.message = f"Project '{project.name_of_the_project}' by {project.handling_officer} is finished."
+                notification.save()
+            except Notification.DoesNotExist:
+                pass
+            
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': 'Permission denied'}, status=403)
+    return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
 @login_required
 def mark_notification_read(request, notification_id):
     notification = get_object_or_404(Notification, id=notification_id)

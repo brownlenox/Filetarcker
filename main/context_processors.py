@@ -5,7 +5,7 @@ def notification_count(request):
         user = request.user
         if user.is_superuser or (hasattr(user, 'userprofile') and user.userprofile.role == 'director'):
             # Count unread notifications for admin/director only
-            new_notifications_count = Notification.objects.filter(is_read_by_admin=False).count()
+            new_notifications_count = Notification.objects.filter(is_read_by_admin=False)
         else:
             # Count unread notifications for handling officers
             new_notifications_count = Notification.objects.filter(is_read_by_handling_officer=False, project__handling_officer=user).count()

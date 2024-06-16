@@ -48,11 +48,21 @@
                                 </a>
                             </div>
                             {% elif request.user.userprofile.role == 'officer' and project.handling_officer == request.user %}
-                            <div class="d-flex justify-content-end">
-                                <a href="{% url 'mark_project_finished' project.pk %}" class="btn btn-success btn-icon">
-                                    <i class="fa-solid fa-check mx-2"></i> Mark as Finished
-                                </a>
-                            </div>
+                                {% if project.status == 'Accepted' %}
+                                    {% if project.is_finished %}
+                                    <div class="d-flex justify-content-end">
+                                        <button class="btn btn-secondary btn-icon" disabled>
+                                            <i class="fa-solid fa-check mx-2"></i> Marked as Finished
+                                        </button>
+                                    </div>
+                                    {% else %}
+                                    <div class="d-flex justify-content-end">
+                                        <a href="{% url 'mark_project_finished' project.pk %}" class="btn btn-success btn-icon" id="mark-finished-{{ project.pk }}" onclick="markAsFinished(event, {{ project.pk }})">
+                                            <i class="fa-solid fa-check mx-2"></i> Mark as Finished
+                                        </a>
+                                    </div>
+                                    {% endif %}
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
@@ -62,4 +72,51 @@
         </div>
     </div>
 </div>
+
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrftoken = getCookie('csrftoken');
+
+function markAsFinished(event, projectId) {
+    event.preventDefault();
+    const button = document.getElementById('mark-finished-' + projectId);
+    
+    fetch(button.href, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            button.innerHTML = '<i class="fa-solid fa-check mx-2"></i> Marked as Finished';
+            button.classList.remove('btn-success');
+            button.classList.add('btn-secondary');
+            button.disabled = true;
+        } else {
+            alert('Failed to mark as finished.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Already marked as finished and notification sent to admin, the status of the button will change on page reload');
+    });
+}
+</script>
 {% endblock %}

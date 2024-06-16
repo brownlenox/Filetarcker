@@ -50,6 +50,7 @@ class Project(models.Model):
     handling_officer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='projects')
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+    is_finished = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name_of_the_project
