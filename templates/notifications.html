@@ -54,8 +54,10 @@
                     <li class="project-item">
                         <div class="card card-hover">
                             <div class="card-body">
-                                <p class="card-text">Message: {{ display_notification.message }}</p>
-                                <a href="{% url 'mark_notification_read' display_notification.id %}" class="btn btn-secondary">OK</a>
+                                <h5 class="card-text fw-bold">Message: </h5><span>{{ display_notification.message }}</span>
+                                <div class="d-flex justify-content-end">
+                                    <a href="{% url 'mark_notification_read' display_notification.id %}" class="btn btn-secondary">OK</a>
+                                </div>
                             </div>
                         </div>
                     </li>
@@ -65,7 +67,7 @@
                 <li class="project-item">
                     <div class="card card-hover">
                         <div class="card-body">
-                            <p class="card-text">No notifications yet</p>
+                            <p class="card-text text-center fw-bold">No notifications yet</p>
                         </div>
                     </div>
                 </li>

@@ -33,6 +33,7 @@
                 <h1 class="display-4">Projects</h1>
             </div>
             <ul class="project-list">
+            {% if projects %}
                 {% for project in projects %}
                 <li class="project-item">
                     <div class="card card-hover shadow-sm">
@@ -68,6 +69,15 @@
                     </div>
                 </li>
                 {% endfor %}
+            {% else %}
+            <li class="project-item">
+                <div class="card card-hover shadow-sm">
+                    <div class="card-body">
+                        <p class="card-text text-center fw-bold">No projects yet</p>
+                    </div>
+                </div>
+            </li>
+            {% endif%}
             </ul>
         </div>
     </div>
