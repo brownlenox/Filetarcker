@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Application-history{% endblock title %}
+{% block title %}Application History{% endblock title %}
 {% block content %}
 <style>
     .project-list {
@@ -45,6 +45,12 @@
                             <div class="d-flex justify-content-end">
                                 <a href="{% url 'delete_project' project.pk %}" class="btn btn-danger btn-icon">
                                     <i class="fa-solid fa-trash mx-2"></i> Delete
+                                </a>
+                            </div>
+                            {% elif request.user.userprofile.role == 'officer' and project.handling_officer == request.user %}
+                            <div class="d-flex justify-content-end">
+                                <a href="{% url 'mark_project_finished' project.pk %}" class="btn btn-success btn-icon">
+                                    <i class="fa-solid fa-check mx-2"></i> Mark as Finished
                                 </a>
                             </div>
                             {% endif %}

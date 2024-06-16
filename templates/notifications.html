@@ -48,6 +48,22 @@
                         </div>
                     </li>
                     {% endfor %}
+                {% elif display_notifications_finished %}
+                {% for display_notification in display_notifications_finished %}
+                    <li class="project-item">
+                        <div class="card card-hover">
+                            <div class="card-body">
+                                <h5 class="card-title">Project: {{ display_notification.project.name_of_the_project }}</h5>
+                                <p class="card-text">Notification from: {{ display_notification.project.user }}</p>
+                                <p class="card-text">Handled by: {{ display_notification.project.handling_officer }}</p>
+                                <p class="card-text">File sent at: {{ display_notification.project.created_at }}</p>
+                                <p class="card-text">Message: {{ display_notification.message }}</p>
+                                <a href="{% url 'accept_project' display_notification.project.id %}" class="btn btn-primary"><i class="fa-solid fa-check mx-2"></i>Accept</a>
+                                <a href="{% url 'decline_project' display_notification.project.id %}" class="btn btn-secondary"><i class="fa-solid fa-times mx-2"></i>Decline</a>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
                 {% else %}
                 <li class="project-item">
                     <div class="card card-hover">

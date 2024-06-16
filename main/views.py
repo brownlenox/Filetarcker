@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -26,18 +27,51 @@ def index(request):
 
 def notifications(request):
     user = request.user
+    admin = User.is_superuser
+    
 
     # Fetch unread notifications
-    notifications = Notification.objects.filter(is_read=False).order_by('-project__created_at')
+    notifications = Notification.objects.filter(is_finished=False, is_read=False).order_by('-project__created_at')
+    notifications_finished = Notification.objects.filter(is_finished=True, is_read=False).order_by('-project__created_at')
     
     display_notifications = []
+    display_notifications_finished = []
+    
 
     # Collect notifications that have a handling officer
+    for notification_finished in notifications_finished:
+        print(notification_finished.project.handling_officer)
+        #print(notification_finished.project.handling_officer)
+        if notification_finished and user==adminS:
+            print(notification_finished.project.handling_officer)
+            display_notifications_finished.append(notification_finished)
+    
     for notification in notifications:
+
         if notification.project.handling_officer == user:
             display_notifications.append(notification)
 
-    return render(request, 'Notifications.html', {'display_notifications': display_notifications})
+    return render(request, 'Notifications.html', {'display_notifications': display_notifications,' display_notifications_finished': display_notifications_finished})
+
+@login_required
+def mark_project_finished(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+    user = request.user
+    try:
+            notification = Notification.objects.get(project=project)
+            notification.is_finished = True
+            notification.message = f"Project '{project.name_of_the_project}' by {project.user.username} is finished."
+            notification.save()
+    except Notification.DoesNotExist:
+            # Handle the case where no notification exists for the project
+            pass
+
+        # Mark the project as finished (add your logic here)
+            project.is_finished = True
+            project.save()
+          
+       
+    return redirect('project_list')
 
 def accept_project(request, project_id):
     project = get_object_or_404(Project, id=project_id)
@@ -263,8 +297,13 @@ def delete_reply(request, project_id, comment_id, reply_id):
 
 @login_required
 def project_list(request):
+    user = request.user
     projects = Project.objects.all().order_by('-created_at')
-    return render(request, 'project_list.html', {'projects': projects})
+    return render(request, 'project_list.html', {
+        'projects': projects,
+        'userprofile': user.userprofile
+    })
+
 
 @login_required
 def update_profile(request):

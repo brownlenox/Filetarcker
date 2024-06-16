@@ -56,7 +56,11 @@ class Project(models.Model):
 
 
 class Notification(models.Model):
+
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    #recipient = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_finished = models.BooleanField(default=False)
+    message = models.TextField()
     is_read = models.BooleanField(default=False)
 
     def __str__(self):
