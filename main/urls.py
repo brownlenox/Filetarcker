@@ -15,6 +15,7 @@ urlpatterns = [
     path('notifications/', views.notifications, name='notifications'),
     path('notifications/accept/<int:project_id>/', views.accept_project, name='accept_project'),
     path('notifications/decline/<int:project_id>/', views.decline_project, name='decline_project'),
+    path('notifications/read/<int:notification_id>/', views.mark_notification_read, name='mark_notification_read'),
     path('projects/<int:project_id>/mark_finished/', views.mark_project_finished, name='mark_project_finished'),
     path('projects/<int:pk>/comments/<int:comment_id>/edit/', views.edit_comment, name='edit_comment'),
     path('projects/<int:pk>/comments/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),

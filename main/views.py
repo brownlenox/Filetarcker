@@ -25,34 +25,35 @@ def is_director(user):
 def index(request):
     return render(request, 'Home.html')
 
+@login_required
 def notifications(request):
     user = request.user
-    admin = User.is_superuser
-    
+    user_profile = user.userprofile
 
     # Fetch unread notifications
-    notifications = Notification.objects.filter(is_finished=False, is_read=False).order_by('-project__created_at')
-    notifications_finished = Notification.objects.filter(is_finished=True, is_read=False).order_by('-project__created_at')
+    notifications = Notification.objects.filter(
+        is_finished=False, 
+        is_read_by_handling_officer=False, 
+        project__handling_officer=user
+    ).order_by('-project__created_at')
     
-    display_notifications = []
+    notifications_finished = Notification.objects.filter(
+        is_finished=True, 
+        is_read_by_admin=False
+    ).order_by('-project__created_at')
+    
+    display_notifications = list(notifications)
     display_notifications_finished = []
+
+    # Admin/Director users see all 'project_finished' notifications
+    if user.is_superuser or user_profile.role == 'director':
+        display_notifications_finished = list(notifications_finished)
+
+    return render(request, 'Notifications.html', {
+        'display_notifications': display_notifications,
+        'display_notifications_finished': display_notifications_finished,
+    })
     
-
-    # Collect notifications that have a handling officer
-    for notification_finished in notifications_finished:
-        print(notification_finished.project.handling_officer)
-        #print(notification_finished.project.handling_officer)
-        if notification_finished and user==adminS:
-            print(notification_finished.project.handling_officer)
-            display_notifications_finished.append(notification_finished)
-    
-    for notification in notifications:
-
-        if notification.project.handling_officer == user:
-            display_notifications.append(notification)
-
-    return render(request, 'Notifications.html', {'display_notifications': display_notifications,' display_notifications_finished': display_notifications_finished})
-
 @login_required
 def mark_project_finished(request, project_id):
     project = get_object_or_404(Project, id=project_id)
@@ -60,7 +61,7 @@ def mark_project_finished(request, project_id):
     try:
             notification = Notification.objects.get(project=project)
             notification.is_finished = True
-            notification.message = f"Project '{project.name_of_the_project}' by {project.user.username} is finished."
+            notification.message = f"Project '{project.name_of_the_project}' by {project.handling_officer} is finished."
             notification.save()
     except Notification.DoesNotExist:
             # Handle the case where no notification exists for the project
@@ -73,13 +74,21 @@ def mark_project_finished(request, project_id):
        
     return redirect('project_list')
 
+@login_required
+def mark_notification_read(request, notification_id):
+    notification = get_object_or_404(Notification, id=notification_id)
+    if request.user.is_superuser or request.user.userprofile.role == 'director':
+        notification.is_read_by_admin = True
+        notification.save()
+    return redirect('notifications')
+
 def accept_project(request, project_id):
     project = get_object_or_404(Project, id=project_id)
     # Logic to handle accepting the project
     project.status = 'Accepted'
     project.save()
     # Update the related notification as read
-    Notification.objects.filter(project=project).update(is_read=True)
+    Notification.objects.filter(project=project).update(is_read_by_handling_officer=True,is_read_by_admin=False)
     return redirect('notifications')
 
 def decline_project(request, project_id):
@@ -88,7 +97,7 @@ def decline_project(request, project_id):
     project.status = 'Declined'
     project.save()
     # Update the related notification as read
-    Notification.objects.filter(project=project).update(is_read=True)
+    Notification.objects.filter(project=project).update(is_read_by_handling_officer=True,is_read_by_admin=False)
     return redirect('notifications')   
 
    
@@ -186,7 +195,7 @@ def create_project(request):
 
             notification = Notification(
                 project=project,
-                is_read=False
+                is_read_by_handling_officer = False
             )
             notification.save()
             return redirect('project_list')
