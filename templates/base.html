@@ -59,23 +59,46 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="{% url 'new_application'%}"><i class="fa-solid fa-plus mx-2"></i>New Application</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="{% url 'project_list'%}"><i class="fa-solid fa-clock-rotate-left mx-2"></i>Application Histories</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light notification-icon" href="{% url 'notifications' %}">
-                            <i class="fa-solid fa-envelope mx-2"></i>Notifications
-                            <span id="notification-count" class="notification-count bg-secondary" style="display: {% if new_notifications_count > 0 %}inline-block{% else %}none{% endif %};">
-                                {{ new_notifications_count }}
-                            </span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="{% url 'account'%}"><i class="fa-solid fa-user mx-2"></i>Account</a>
-                    </li>
+                        {% if user.userprofile.role == 'director' %}
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="{% url 'new_application'%}"><i class="fa-solid fa-plus mx-2"></i>New Application</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="{% url 'project_list'%}"><i class="fa-solid fa-clock-rotate-left mx-2"></i>Application Histories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light notification-icon" href="{% url 'notifications' %}">
+                                <i class="fa-solid fa-envelope mx-2"></i>Notifications
+                                <span id="notification-count" class="notification-count bg-secondary" style="display: {% if new_notifications_count > 0 %}inline-block{% else %}none{% endif %};">
+                                    {{ new_notifications_count }}
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="{% url 'account'%}"><i class="fa-solid fa-user mx-2"></i>Account</a>
+                        </li>
+                        {% elif user.userprofile.role == 'officer'%}
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="{% url 'project_list'%}"><i class="fa-solid fa-clock-rotate-left mx-2"></i>Application Histories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light notification-icon" href="{% url 'notifications' %}">
+                                <i class="fa-solid fa-envelope mx-2"></i>Notifications
+                                <span id="notification-count" class="notification-count bg-secondary" style="display: {% if new_notifications_count > 0 %}inline-block{% else %}none{% endif %};">
+                                    {{ new_notifications_count }}
+                                </span>
+                            </a>
+                        </li>
+                        {% else%}
+                        <li class="nav-item">
+                            <a class="nav-link text-light notification-icon" href="{% url 'notifications' %}">
+                                <i class="fa-solid fa-envelope mx-2"></i>Notifications
+                                <span id="notification-count" class="notification-count bg-secondary" style="display: {% if new_notifications_count > 0 %}inline-block{% else %}none{% endif %};">
+                                    {{ new_notifications_count }}
+                                </span>
+                            </a>
+                        </li>
+                        {% endif %}
                     {% else %}
                     <li class="nav-item">
                         <a class="nav-link text-light" href="{% url 'login' %}"><i class="fa-solid fa-arrow-right-to-bracket mx-2"></i>Login</a>
